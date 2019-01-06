@@ -1,0 +1,1169 @@
+<!doctype html>
+<html>
+<head>
+    <title>tic tac toe</title>
+    <style type="text/CSS">
+        body{ 
+            font-family: arial, sans-serif; 
+        }
+        div.menu_selection{
+            background-color: rgb(255, 224, 224);
+            width: 220px;
+            border: 10px solid orange;
+            padding: 75px;
+            margin: 25px;   
+            text-align: center;
+            float:left;
+        }
+        div.menu_selection:hover{
+            box-shadow: 10px 10px 5px grey;
+        }
+        table {
+            left:38%;
+        }
+        table.outer{
+            border:0px;
+        }
+        table, th, td{
+				border: 1px solid black;
+				border-collapse: collapse;
+				font-family: Calibri;
+				font-size: 48px;
+        }
+        caption {
+            color: navy;
+        }
+        tbody tr {
+            height: 140px;
+        }
+        td {
+            width: 140px;
+            text-align: center;
+        }
+        td:hover{
+            background-color:rgb(235, 234, 250);
+        }
+        #no:hover{
+            background-color: white;
+        }
+        
+        td.line{
+            background-color: crimson;
+        }
+        tbody tr.ultimate{
+            height:65px;
+        }
+        td.ultimate{
+            width: 65px;
+        }
+        td.outer:hover{
+            background-color:white; 
+        }
+        .outer{
+            border: 1px solid white;
+        }
+        td.outer{
+            width:200px;
+        }
+        div.score_div{
+            border:dotted rgb(26, 251, 26) 5px;        
+            padding: 3px;
+            width:150px;
+            
+        }
+        #back{
+            background-color: cornsilk;
+            border:black solid 0.5px;
+            width:200px;
+            text-align: center;
+            padding:20px;
+            border-radius: 10px;
+            float:right; 
+            position:relative;
+            top:-100px;
+        }
+        #back:hover{
+            box-shadow: 10px 10px 5px grey;
+        }
+        .button {
+            padding: 16px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        
+        .point{
+            border: 5px solid red;
+            background-color: blanchedalmond;
+            position:relative;
+            float:left;
+            width: 150px;
+            padding:10px;
+        }
+        #vs{
+            position:relative;
+            top:-50px;
+        }
+        .u_word{
+            position:relative;
+            
+            border:2px solid navy;
+            background-color:blanchedalmond;
+            text-align: center;
+            width:100px; 
+            padding: 20px;
+        }
+        .not_allow,.not_allow:hover{
+            background-color: rgba(199, 198, 198, 0.637);
+            color:rgb(104, 104, 104);
+        }
+        .win, .win:hover{
+            background-color: rgb(248, 235, 59);
+        }
+        .O,.O:hover{
+            background-color: rgb(20, 235, 250);
+        }
+        .X,.X:hover{
+            background-color: rgb(250, 54, 217);
+        }
+    </style>
+    
+
+<script>
+    var turn="O";
+    var last_turn="O";
+    var pointA;
+    var pointB;
+    var turns_number=0;
+    ///////////////////////vs_computer//////////////////////////////////////////
+    var step_record=[];
+    var transport_id=[];
+    var transback_id=[];
+    var inner_table=[];
+    var state;
+    var score;
+    var best_score;
+    function check_com_win(){
+        var nn=[];
+        
+        for(var i=1;i<=9;i++){
+            nn[i]=document.getElementById(i);
+        }
+        
+        if(nn[1].innerHTML==nn[2].innerHTML&&nn[2].innerHTML==nn[3].innerHTML&&nn[3].innerHTML=="O"){
+            change_color(nn[1],nn[2],nn[3]);console.log("123");
+        }
+        if(nn[4].innerHTML==nn[5].innerHTML&&nn[5].innerHTML==nn[6].innerHTML&&nn[6].innerHTML=="O"){
+            change_color(nn[4],nn[5],nn[6]);console.log("456");
+        }
+        if(nn[7].innerHTML==nn[8].innerHTML&&nn[8].innerHTML==nn[9].innerHTML&&nn[9].innerHTML=="O"){
+            change_color(nn[7],nn[8],nn[9]);console.log("789");
+        }
+        if(nn[1].innerHTML==nn[4].innerHTML&&nn[4].innerHTML==nn[7].innerHTML&&nn[7].innerHTML=="O"){
+            change_color(nn[1],nn[4],nn[7]);console.log("147");
+        }
+        if(nn[2].innerHTML==nn[5].innerHTML&&nn[5].innerHTML==nn[8].innerHTML&&nn[8].innerHTML=="O"){
+            change_color(nn[2],nn[5],nn[8]);console.log("258");
+        }
+        if(nn[3].innerHTML==nn[6].innerHTML&&nn[6].innerHTML==nn[9].innerHTML&&nn[9].innerHTML=="O"){
+            change_color(nn[3],nn[6],nn[9]);console.log("369");
+        }
+        if(nn[1].innerHTML==nn[5].innerHTML&&nn[5].innerHTML==nn[9].innerHTML&&nn[9].innerHTML=="O"){
+            change_color(nn[1],nn[5],nn[9]);console.log("159");
+        }
+        if(nn[3].innerHTML==nn[5].innerHTML&&nn[5].innerHTML==nn[7].innerHTML&&nn[7].innerHTML=="O"){
+            change_color(nn[3],nn[5],nn[7]);console.log("357");
+        }
+    
+    }
+    function end_com(win){
+        if(win==1){
+            score++;
+            if(best_score<score){
+                best_score=score;
+            }
+            document.getElementById("score").innerHTML="Score:"+score;
+            document.getElementById("best_score").innerHTML="High score:"+best_score;
+            setTimeout(function(){
+                for(var i=1;i<=9;i++){
+                    inner_table[i]="";
+                    transport_id[i]=i;
+                    transback_id[i]=i;
+                    step_record[i]="";
+                    document.getElementById(i).innerHTML="";
+                }
+                first_step();
+            },2000);
+        }
+        else{
+            if(best_score>localStorage["best_score"]||localStorage["best_score"]==undefined){
+                localStorage.setItem("best_score",best_score);
+            }
+            document.getElementById("cap").innerHTML="You Fail!";
+            document.getElementById("start_game").disabled=false;
+            document.getElementById("table").removeEventListener("click",vs_com_step,false);
+            
+        }
+    }
+    function com_step(){
+        var set_id;
+        if(state==0){//center start
+            if(turns_number==2){//step 2
+                if(step_record[2]==2){//side
+                    set_id=3;
+                }
+                else if(step_record[2]==1){//corner
+                    set_id=9;
+                }
+            }
+            else if(turns_number==4){//step 4
+                if(step_record[2]==2){//step 2 is side
+                    if(step_record[4]==7){
+                        set_id=9;
+                    }
+                    else{//fail
+                        set_id=7;
+                        end_com(0);
+                        
+                    }
+                }
+                else if(step_record[2]==1){//step 2 is corner
+                    if(step_record[4]==3){//may be tie
+                        set_id=2;
+                    }
+                    else if(step_record[4]==7){
+                        set_id=4;
+                    }
+                    else if(step_record[4]==4||step_record[4]==6){//fail
+                        set_id=7;
+                    }
+                    else {
+                        set_id=3;
+                    }
+                }
+            }
+            else if(turns_number==6){//step 6
+                if(step_record[2]==2){//step 2 is side, left 1 condition
+                    if(step_record[6]==1){//fail
+                        set_id=6;
+                    }
+                    else{
+                        set_id=1;
+                    }
+                    end_com(0);
+                    
+                }
+                else{//step 2 is corner
+                    if(step_record[4]==3){//may be tie
+                        if(step_record[6]==8){//tie
+                            set_id=4;
+                            
+                        }
+                        else{//fail
+                            set_id=8;
+                            end_com(0);
+                            
+                        }
+                    }
+                    else if(step_record[4]==7){//may be tie
+                        if(step_record[6]==6){//tie
+                            set_id=2;
+                            
+                        }
+                        else{//fail
+                            set_id=6;
+                            end_com(0);
+                            
+                        }
+                    }
+                    else if(step_record[4]==4||step_record[4]==6){//fail
+                        if(step_record[6]==3){
+                            set_id=8;
+                        }
+                        else{
+                            set_id=3;
+                        }
+                        end_com(0);
+                        
+                    }
+                    else {//fail
+                        if(step_record[6]==6){
+                            set_id=7;
+                        }
+                        else{
+                            set_id=6;
+                        }
+                        end_com(0);
+                        
+                    }
+                }
+            }
+            else{//final step 8,left 2 condition
+                if(step_record[4]==3){
+                    if(step_record[8]==6){//tie
+                        set_id=7;
+                        end_com(1);
+                        
+                    }
+                    else{//fail
+                        set_id=6;
+                        end_com(0);
+                        
+                    }
+                }
+                else{
+                    if(step_record[8]==8){//tie
+                        set_id=3;
+                        end_com(1);
+                        
+                    }
+                    else{//fail
+                        set_id=8;
+                        end_com(0);
+                        
+                    }
+                }
+            }
+        }
+        else{//start with corner
+            if(turns_number==2){
+                if(step_record[2]==5){//may be tie
+                    set_id=9;
+                }
+                else{//fail
+                    if(step_record[2]==9){
+                        set_id=3;
+                    }
+                    else if(step_record[2]==3){
+                        set_id=9;
+                    }
+                    else{
+                        set_id=7;
+                    }
+                }
+                console.log(step_record);
+                console.log(inner_table);
+                console.log(transport_id);
+            }
+            else if(turns_number==4){
+                if(step_record[2]==5){//may be tie
+                    if(step_record[4]==3){//fail
+                        set_id=7;
+                    }
+                    else if(step_record[4]==7){//fail
+                        set_id=3;
+                    }
+                    else if(step_record[4]==2){//may be tie
+                        set_id=8;
+                    }
+                    else if(step_record[4]==6){
+                        set_id=4;
+                    }
+                    else if(step_record[4]==4){
+                        set_id=6;
+                    }
+                    else{
+                        set_id=2;
+                    }
+                   // console.log(step_record);
+                   // console.log(inner_table);
+                }
+                else {//fail
+                    if(step_record[3]==3){
+                        if(step_record[4]==2){
+                            set_id=7;
+                        }
+                        else{
+                            set_id=2;
+                            end_com(0);
+                            
+                        }
+                    }
+                    else if(step_record[3]==7){
+                        if(step_record[4]==4){
+                            set_id=5;
+                        }       
+                        else{    
+                            set_id=4;
+                            end_com(0);
+                            
+                        }           
+                    }
+                    else{
+                        if(step_record[4]==5){
+                            set_id=7;
+                        }
+                        else{
+                            set_id=5;
+                            end_com(0);
+                            
+                        }
+                    }
+                    
+                }
+            }
+            else if(turns_number==6){
+                if(step_record[2]==5){
+                    if(step_record[4]==7){//fail
+                        if(step_record[6]==2){
+                            set_id=6;
+                        }
+                        else{
+                            set_id=2;
+                        }
+                        end_com(0);
+                    }
+                    else if(step_record[4]==3){//fail
+                        if(step_record[6]==4){
+                            set_id=8;
+                        }
+                        else{
+                            set_id=4;
+                        }
+                        end_com(0);
+                    }
+                    else if(step_record[5]==2||step_record[5]==6){
+                        if(step_record[6]==3){
+                            set_id=7;
+                        }
+                        else{//fail
+                            set_id=3;
+                            end_com(0);
+                        }
+                    }
+                    else if(step_record[5]==4||step_record[5]==8){
+                        if(step_record[6]==7){
+                            set_id=3;
+                        }
+                        else{//fail
+                            set_id=7;
+                            end_com(0);
+                        }
+                    }
+                }    
+                else if(inner_table[7]=="O"){//3 condition to fail
+                    if(inner_table[5]=="O"){
+                        if(step_record[6]==3){
+                            set_id=9;
+                        }
+                        else{
+                            set_id=3;
+                        }
+                        end_com(0);
+                    }
+                    else if(inner_table[3]=="O"){
+                        if(step_record[6]==5){
+                            set_id=4;
+                        }
+                        else{
+                            set_id=5;
+                        }
+                        end_com(0);
+                    }
+                    else if(inner_table[9]=="O"){
+                        if(step_record[6]==4){
+                            set_id=8;
+                        }
+                        else{
+                            set_id=4;
+                        }
+                        end_com(0);
+                    }
+                }
+            }
+            else{//step 8, left 4 conditions to fail
+                if(step_record[4]==2){
+                    if(step_record[8]==6){//tie
+                        set_id=4;
+                        end_com(1);
+                    }
+                    else{
+                        set_id=6;
+                        end_com(0);
+                    }
+                }
+                else if(step_record[4]==4){
+                    if(step_record[8]==8){//tie
+                        set_id=2;
+                        end_com(1);
+                    }
+                    else{
+                        set_id=8;
+                        end_com(0);
+                    }
+                }
+                else if(step_record[4]==6){
+                    if(step_record[8]==2){//tie
+                        set_id=8;
+                        end_com(1);
+                    }
+                    else{
+                        set_id=2;
+                        end_com(0);
+                    }
+                }
+                else if(step_record[4]==8){
+                    if(step_record[8]==4){//tie
+                        set_id=6;
+                        end_com(1);
+                    }
+                    else{
+                        set_id=4;
+                        end_com(0);
+                        
+                    }
+                }
+            }
+            
+
+        }
+        //console.log("turns_number"+turns_number);
+        //console.log("state"+state);
+        //console.log("step_record"+step_record);
+        //console.log("set_id"+set_id);
+        turns_number++;
+        step_record[turns_number]=set_id;
+        inner_table[set_id]="O";
+        set_id=transback_id[set_id];
+        
+        document.getElementById(set_id).innerHTML="O";
+        check_com_win();
+    }
+    function vs_com_step(e){
+        var id=e.target.getAttribute("id");
+        if(e.target.tagName.toLowerCase() == "td"&&id!="no"){  
+            //console.log(e.target.innerHTML);
+            if(e.target.innerHTML=="O"||e.target.innerHTML=="X"){
+                return;
+            }
+            e.target.innerHTML="X";
+            turns_number++;
+            click_sound();
+            if(turns_number==2){
+                if(state==0){//start with center
+                    if(id=="4"||id=="7"){
+                        transport_id[7]="1"; 
+                        transport_id[4]="2";
+                        transport_id[1]="3";
+                        transport_id[8]="4";
+                        transport_id[5]="5";
+                        transport_id[2]="6";
+                        transport_id[9]="7";
+                        transport_id[6]="8";
+                        transport_id[3]="9";
+                    }
+                    else if(id=="6"||id=="3"){
+                        transport_id[3]="1";
+                        transport_id[6]="2";
+                        transport_id[9]="3";
+                        transport_id[2]="4";
+                        transport_id[5]="5";
+                        transport_id[8]="6";
+                        transport_id[1]="7";
+                        transport_id[4]="8";
+                        transport_id[7]="9";
+                    }
+                    else if(id=="8"||id=="9"){
+                        transport_id[9]="1";
+                        transport_id[8]="2";
+                        transport_id[7]="3";
+                        transport_id[6]="4";
+                        transport_id[5]="5";
+                        transport_id[4]="6";
+                        transport_id[3]="7";
+                        transport_id[2]="8";
+                        transport_id[1]="9";
+                    }
+                    
+                }
+                else{//start with corner
+                    if(document.getElementById("1").innerHTML=="O"){
+                        if(id==4||id==7||id==8){
+                            transport_id[1]="1";
+                            transport_id[4]="2";
+                            transport_id[7]="3";
+                            transport_id[2]="4";
+                            transport_id[5]="5";
+                            transport_id[8]="6";
+                            transport_id[3]="7";
+                            transport_id[2]="8";
+                            transport_id[1]="9";
+                        }
+                    }
+                    else if(document.getElementById("3").innerHTML=="O"){
+                        if(id==2||id==1||id==4){
+                            transport_id[3]="1";
+                            transport_id[2]="2";
+                            transport_id[1]="3";
+                            transport_id[6]="4";
+                            transport_id[5]="5";
+                            transport_id[4]="6";
+                            transport_id[9]="7";
+                            transport_id[8]="8";
+                            transport_id[7]="9";
+                        }
+                        else{
+                            transport_id[3]="1";
+                            transport_id[6]="2";
+                            transport_id[9]="3";
+                            transport_id[2]="4";
+                            transport_id[5]="5";
+                            transport_id[8]="6";
+                            transport_id[1]="7";
+                            transport_id[4]="8";
+                            transport_id[7]="9";
+                        }
+                    }
+                    else if(document.getElementById("7").innerHTML=="O"){
+                        if(id==8||id==9||id==6){
+                            transport_id[7]="1";
+                            transport_id[8]="2";
+                            transport_id[9]="3";
+                            transport_id[4]="4";
+                            transport_id[5]="5";
+                            transport_id[6]="6";
+                            transport_id[1]="7";
+                            transport_id[2]="8";
+                            transport_id[3]="9";
+                        }
+                        else{
+                            transport_id[7]="1";
+                            transport_id[4]="2";
+                            transport_id[1]="3";
+                            transport_id[8]="4";
+                            transport_id[5]="5";
+                            transport_id[2]="6";
+                            transport_id[9]="7";
+                            transport_id[6]="8";
+                            transport_id[3]="9";
+                        }
+                    }
+                    else if(document.getElementById("9").innerHTML=="O"){
+                        if(id==6||id==3||id==2){
+                            transport_id[9]="1";
+                            transport_id[6]="2";
+                            transport_id[3]="3";
+                            transport_id[8]="4";
+                            transport_id[5]="5";
+                            transport_id[2]="6";
+                            transport_id[7]="7";
+                            transport_id[4]="8";
+                            transport_id[1]="9";
+                        }
+                        else{
+                            transport_id[9]="1";
+                            transport_id[8]="2";
+                            transport_id[7]="3";
+                            transport_id[6]="4";
+                            transport_id[5]="5";
+                            transport_id[4]="6";
+                            transport_id[3]="7";
+                            transport_id[2]="8";
+                            transport_id[1]="9";
+                        }
+                    }
+                }
+
+                for(var j=1;j<=9;j++){
+                    transback_id[transport_id[j]]=j;
+                }
+            }
+            step_record[turns_number]=transport_id[id];
+            inner_table[transport_id[id]]="X";
+            com_step();
+        }
+    }
+    
+    function first_step(){
+        for(var i=1;i<=9;i++){
+            transport_id[i]=i;
+            transback_id[i]=i;
+            inner_table[i]="";
+        }
+        state=Math.floor(Math.random()*2);
+        var f_id;
+        
+        if(state==0){
+            f_id="5";
+        }
+        if(state==1){
+            var corner_id=Math.floor(Math.random()*4);
+            if(corner_id==0) f_id="1";
+            if(corner_id==1) f_id="3";
+            if(corner_id==2) f_id="7";
+            if(corner_id==3) f_id="9";
+        }
+        turns_number=1;
+        step_record[1]=f_id;
+        //console.log(f_id);
+        inner_table[f_id]="O";
+        document.getElementById(f_id).innerHTML="O";
+    }
+    function set_color_back_com(){
+        for (var i=1;i<=9;i++){
+            document.getElementById(i).setAttribute("class","");
+        }
+    }
+    function start_com_game(){
+        document.getElementById("start_game").disabled=true;
+        for(var i=1;i<=9;i++){
+            document.getElementById(i).innerHTML="";
+        }
+        score=0;
+        document.getElementById("score").innerHTML="score:0";
+        first_step();
+        document.getElementById("table").addEventListener("click",vs_com_step,false);
+        document.getElementById("cap").innerHTML="VS Computer";
+        set_color_back_com();
+    }
+    ////////////////////////play_with_friend////////////////////////////////////
+    function set_color_back(){
+        for(var i=0;i<3;i++){
+            for(var j=0;j<3;j++){
+                document.getElementById(i+" "+j).setAttribute("class","");
+            }
+        }
+    }
+    function again(){
+        for(var i=0;i<3;i++){
+            for(var j=0;j<3;j++){
+                document.getElementById(i+" "+j).innerHTML="";
+            }
+        }
+        turns_number=0;
+        document.getElementById("again").disabled=true;
+        set_color_back();
+        window.addEventListener("click",step,false);
+    }
+    function change_color(a,b,c){
+        a.setAttribute("class","win");
+        b.setAttribute("class","win");
+        c.setAttribute("class","win");
+    }
+    function check_win(){
+        var check=[];
+        var win=0;
+        var who;
+        for(var i=0;i<3;i++){
+            check[0]=document.getElementById(i+" 0").innerHTML;
+            check[1]=document.getElementById(i+" 1").innerHTML;
+            check[2]=document.getElementById(i+" 2").innerHTML;
+            if(check[0]==check[1]&&check[1]==check[2]&&check[0]!=""){
+                win=1;who=check[0];
+                change_color(document.getElementById(i+" 0"),document.getElementById(i+" 1"),document.getElementById(i+" 2"));
+                break;
+            }
+        }
+        for(var i=0;i<3;i++){
+            check[0]=document.getElementById("0 "+i).innerHTML;
+            check[1]=document.getElementById("1 "+i).innerHTML;
+            check[2]=document.getElementById("2 "+i).innerHTML;
+            if(check[0]==check[1]&&check[1]==check[2]&&check[0]!=""){
+                win=1;who=check[0]; 
+                change_color(document.getElementById("0 "+i),document.getElementById("1 "+i),document.getElementById("2 "+i));
+                break;
+            }
+        }
+        check[0]=document.getElementById("1 1").innerHTML;
+        check[1]=document.getElementById("0 0").innerHTML;
+        check[2]=document.getElementById("2 2").innerHTML;
+        if(check[0]==check[1]&&check[1]==check[2]&&check[0]!=""){
+            win=1;who=check[0];
+            change_color(document.getElementById("1 1"),document.getElementById("0 0"),document.getElementById("2 2"));
+        }
+        check[1]=document.getElementById("0 2").innerHTML;
+        check[2]=document.getElementById("2 0").innerHTML;
+        if(check[0]==check[1]&&check[1]==check[2]&&check[0]!=""){
+            win=1;who=check[0]; 
+            change_color(document.getElementById("1 1"),document.getElementById("0 2"),document.getElementById("2 0"));
+        }
+        if(win==1){
+            if(who=="O"){
+                pointA++;
+                document.getElementById("Apoint").innerHTML=pointA;
+            }
+            else {
+                pointB++;
+                document.getElementById("Bpoint").innerHTML=pointB;
+            }
+            //window.alert(who+" wins!");
+            document.getElementById("word").innerHTML=who+" wins!";
+            document.getElementById("again").disabled=false;
+            
+            window.removeEventListener("click",step,false);
+        }
+        else if(turns_number==9){
+            //window.alert("Tie!");
+            document.getElementById("word").innerHTML="TIE!";
+            document.getElementById("again").disabled=false;
+            
+            window.removeEventListener("click",step,false);
+        }
+        //console.log(turns_number);
+    }
+    function step(e){
+        var id=e.target.getAttribute("id");
+        if(e.target.tagName.toLowerCase() == "td"&&id!="no"){  
+            //console.log(e.target.innerHTML);
+            if(e.target.innerHTML=="O"||e.target.innerHTML=="X"){
+                return;
+            }
+            click_sound();
+            e.target.innerHTML=turn;
+            if(turn=="X")turn="O";else turn="X";
+            document.getElementById("word").innerHTML=turn+"'s turn";
+            turns_number++;
+            check_win();
+        }
+        
+    }
+    /////////////////////////////////////ultimate/////////////////////////////////////////
+    var valid_table=[];
+    var inner_big_table=[];
+    function ultimate_again(){
+        for(var i=1;i<=9;i++){
+            valid_table[i]=true;
+            inner_big_table[i]="";
+        }
+        for(var i=1;i<=9;i++){
+            for(var j=1;j<=9;j++){
+                var n=document.getElementById(i+""+j);
+                n.innerHTML="";
+                n.setAttribute("class","ultimate")
+            }
+        }
+        turn=last_turn;
+        if(last_turn=="O")last_turn="X";else last_turn="O";
+        document.getElementById("word").innerHTML=turn+"'s turn";
+        document.getElementById("big_table").addEventListener("click",u_step,false);
+        document.getElementById("u_again").setAttribute("style","top:-400px; display:none;");
+    }
+    function check_hover(e){
+        var t_id=e.target.getAttribute("id");
+        t_id=Math.floor(t_id/10);
+        //console.log(t_id);
+        if(e.target.tagName.toLowerCase() == "td"&&valid_table[t_id]){  
+            //console.log(e.target.id);
+
+        }
+    }
+    function u_check(id){
+        var winner;
+        var win=0;
+        var t_id=Math.floor(id/10);
+        //check small win
+        var td_data=[];
+        for(var i=1;i<=9;i++){
+            td_data[i]=document.getElementById(t_id+""+i).innerHTML;
+        }
+        //check function
+        if(td_data[1]==td_data[2]&&td_data[2]==td_data[3]&&td_data[1]!=""){
+            winner=td_data[1];
+            win=1;
+        }
+        else if(td_data[4]==td_data[5]&&td_data[5]==td_data[6]&&td_data[4]!=""){
+            winner=td_data[4];
+            win=1;
+        }
+        else if(td_data[7]==td_data[8]&&td_data[8]==td_data[9]&&td_data[7]!=""){
+            winner=td_data[7];
+            win=1;
+        }
+        else if(td_data[1]==td_data[4]&&td_data[4]==td_data[7]&&td_data[7]!=""){
+            winner=td_data[1];
+            win=1;
+        }
+        else if(td_data[2]==td_data[5]&&td_data[5]==td_data[8]&&td_data[8]!=""){
+            winner=td_data[2];
+            win=1;
+        }
+        else if(td_data[3]==td_data[6]&&td_data[6]==td_data[9]&&td_data[9]!=""){
+            winner=td_data[3];
+            win=1;
+        }
+        else if(td_data[1]==td_data[5]&&td_data[5]==td_data[9]&&td_data[9]!=""){
+            winner=td_data[1];
+            win=1;
+        }
+        else if(td_data[3]==td_data[5]&&td_data[5]==td_data[7]&&td_data[7]!=""){
+            winner=td_data[3];
+            win=1;
+        }
+        if(win==1){
+            console.log(winner);
+            inner_big_table[t_id]=winner;
+            //console.log("pre"+inner_big_table);
+            //if small win, check big win
+            td_data=inner_big_table;
+            win=0;
+            //console.log(td_data);
+            console.log(inner_big_table);
+            //check function
+            if(td_data[1]==td_data[2]&&td_data[2]==td_data[3]&&td_data[1]!=""){
+                winner=td_data[1];
+                win=1;
+            }
+            else if(td_data[4]==td_data[5]&&td_data[5]==td_data[6]&&td_data[4]!=""){
+                winner=td_data[4];
+                win=1;
+            }
+            else if(td_data[7]==td_data[8]&&td_data[8]==td_data[9]&&td_data[7]!=""){
+                winner=td_data[7];
+                win=1;
+            }
+            else if(td_data[1]==td_data[4]&&td_data[4]==td_data[7]&&td_data[7]!=""){
+                winner=td_data[1];
+                win=1;
+            }
+            else if(td_data[2]==td_data[5]&&td_data[5]==td_data[8]&&td_data[8]!=""){
+                winner=td_data[2];
+                win=1;
+            }
+            else if(td_data[3]==td_data[6]&&td_data[6]==td_data[9]&&td_data[9]!=""){
+                winner=td_data[3];
+                win=1;
+            }
+            else if(td_data[1]==td_data[5]&&td_data[5]==td_data[9]&&td_data[9]!=""){
+                winner=td_data[1];
+                win=1;
+            }
+            else if(td_data[3]==td_data[5]&&td_data[5]==td_data[7]&&td_data[7]!=""){
+                winner=td_data[3];
+                win=1;
+            }
+            //game end
+            if(win==1){
+                if(winner=="O")pointA++;else pointB++;
+                document.getElementById("Apoint").innerHTML=pointA;
+                document.getElementById("Bpoint").innerHTML=pointB;
+                document.getElementById("word").innerHTML=winner+"'s win";
+                document.getElementById("u_again").setAttribute("style","top:-400px;");
+                document.getElementById("big_table").removeEventListener("click",u_step,false);
+                
+            }
+        }
+        
+        //adjust big table
+        
+        if(inner_big_table[id%10]==""){
+            for(var i=1;i<=9;i++){
+                valid_table[i]=false;
+            }
+            valid_table[id%10]=true;
+        }
+        else{
+            for(var i=1;i<=9;i++){
+                if(inner_big_table[i]=="")valid_table[i]=true;
+                else valid_table[i]=false;
+            }
+        }
+        //adjust display
+        for( var i=1;i<=9;i++){
+            for(var j=1;j<=9;j++){
+                var n=document.getElementById(i+""+j);
+                if(inner_big_table[i]=="O")n.setAttribute("class","O ultimate");
+                else if(inner_big_table[i]=="X")n.setAttribute("class","X ultimate");
+                else if(valid_table[i]==true)n.setAttribute("class","ultimate");
+                else n.setAttribute("class","ultimate not_allow");
+            }
+        }
+    }
+    
+    function u_step(e){
+        var id=e.target.getAttribute("id");
+        var cl=e.target.getAttribute("class");
+        var t_id=Math.floor(id/10);
+        if(e.target.tagName.toLowerCase() == "td"){  
+            if(e.target.innerHTML=="O"||e.target.innerHTML=="X"||cl=="outer"||valid_table[t_id]==false){
+                return;
+            }
+            click_sound();
+            e.target.innerHTML=turn;
+            if(turn=="X")turn="O";else turn="X";
+            document.getElementById("word").innerHTML=turn+"'s turn";
+            
+            u_check(id);
+        }
+    }
+    /////////////////////////////////////label////////////////////////////////////////////
+
+    function r(e){
+        if(e.target.getAttribute("class")=="menu_selection")
+            e.target.setAttribute("style","box-shadow:none;");
+            
+            
+    }
+    function s(e){
+        if(e.target.getAttribute("class")=="menu_selection")
+            e.target.setAttribute("style","");
+    }
+    function sound(e){
+        if(e.target.getAttribute("class")=="menu_selection")
+            document.getElementById("mu").play();
+    }
+    function click_sound(){
+        document.getElementById("mu").play();
+    }
+    function menu(){
+        var n="";
+        n+='<audio id="mu" preload="auto">';
+        n+='    <source src="pickup.mp3" >';
+        n+='</audio>';
+        n+='<div style="text-align: center;"><h1>Tic - Tac - Toe</h1></div>';
+        n+='<div class="menu_selection" onclick="vs_computer()"><h2>VS Computer</h2></div>';
+        n+='<div class="menu_selection" onclick="play_with_friend()"><h2>Play with Friend</h2></div>';
+        n+='<div class="menu_selection" onclick="ultimate()"><h2>Ultimate</h2><div>';
+        
+        window.addEventListener("mouseover",sound,false);
+        window.addEventListener("mousedown",r,false);
+        window.addEventListener("mouseup",s,false);
+        document.body.innerHTML=n;    
+        
+    }
+
+
+
+    function vs_computer(){
+        best_score=localStorage["best_score"];
+        if(best_score==undefined)best_score=0;
+        var n='';
+        n+='<audio id="mu" preload="auto">';
+        n+='    <source src="poka.mp3" >';
+        n+='</audio>';
+        n+='<div class="score_div" id="best_score" style="border-bottom: 0ch;">High score:'+best_score+'</div>'
+        n+='<div class="score_div" id="score" style="border-top: 0ch;">Score:0</div>';
+        n+='<div width="100%" height="100%" align="middle" id="vs">';
+        n+='<table id="table">';
+        n+='<caption id="cap">VS Computer</caption>';
+        n+='<tbody>';
+        n+='    <tr>';
+        n+='        <td id="1"></td>';
+        n+='        <td id="2"></td>';
+        n+='        <td id="3"></td>';
+        n+='    </tr>';
+        n+='    <tr>';
+        n+='        <td id="4"></td>';
+        n+='        <td id="5"></td>';
+        n+='        <td id="6"></td>';
+        n+='   </tr>';
+        n+='    <tr>';
+        n+='        <td id="7"></td>';
+        n+='        <td id="8"></td>';
+        n+='        <td id="9"></td>';
+        n+='    </tr>';
+        n+='</tbody>';
+        n+='<tfoot>'
+        n+='    <tr>';
+        n+='        <td colspan="3" id="no" style="border:1px solid white;">';
+        n+='            <input type="button" class="button" value="Start" id="start_game" onclick="start_com_game()">'
+        n+='        </td>'
+        n+='    </tr>';
+        n+='</tfoot>';
+        n+='</table>';
+        n+='</div>'
+        
+        
+        n+='<div id="back" onclick=menu()>Back to menu</div>'
+        document.body.innerHTML=n;
+        window.removeEventListener("click",step,false);
+    }
+    function play_with_friend(){
+        pointA=0;pointB=0;
+        last_turn="O";
+        var n='';
+        n+='<audio id="mu" preload="auto">';
+        n+='    <source src="poka.mp3" >';
+        n+='</audio>';
+        n+='<div class="point" id="Apoint">0</div><div class="point" id="Bpoint" style="float:right;">0</div>'
+        n+='<div width="100%" height="100%" align="middle">';
+        n+='<table id="table">';
+        n+='<caption id="word">Play With Friend</caption>';
+        n+='<tbody>';
+        n+='    <tr>';
+        n+='        <td id="0 0"></td>';
+        n+='        <td id="0 1"></td>';
+        n+='        <td id="0 2"></td>';
+        n+='    </tr>';
+        n+='    <tr>';
+        n+='        <td id="1 0"></td>';
+        n+='        <td id="1 1"></td>';
+        n+='        <td id="1 2"></td>';
+        n+='   </tr>';
+        n+='    <tr>';
+        n+='        <td id="2 0"></td>';
+        n+='        <td id="2 1"></td>';
+        n+='        <td id="2 2"></td>';
+        n+='    </tr>';
+        n+='</tbody>';
+        n+='<tfoot>';
+        n+='    <tr>';
+        n+='        <td colspan="3" id="no" style="border:1px solid white;">';
+        n+='            <input class="button" id="again" type="button" value="Again" disabled onclick="again()">';
+        n+='            <input class="button" id="new" type="button" value="restart" onclick="play_with_friend()">';
+        n+='        </td>';
+        n+='    </tr>';
+        n+='    </tfoot>';
+        n+='</table>';
+        n+='</div>'
+        n+='<div id="back" onclick=menu()>Back to menu</div>'
+        
+        document.body.innerHTML=n;
+        again();
+        //document.getElementById("table").addEventListener("click",step,false);
+    }
+    function ultimate(){
+        var idpulse=1;
+        var tdpulse=1;
+        pointA=0;pointB=0;
+        last_turn="O";
+        var n='';
+        n+='<audio id="mu" preload="auto">';
+        n+='    <source src="poka.mp3" >';
+        n+='</audio>';
+        n+='<div class="point" id="Apoint" style="border: 5px solid rgb(20, 235, 250);">0</div>'
+        n+='<div class="point" id="Bpoint" style="float:right; border: 5px solid rgb(250, 54, 217);">0</div>'
+        n+='<div width="100%" height="100%" align="middle">';
+        n+='<table class="outer" id="big_table" border="0">';
+        n+='<tbody>';
+        for(var i=0;i<3;i++){
+            n+='<tr>';
+            for(var j=0;j<3;j++){
+                n+='<td id="no" class="outer"><table><tbody>';
+                tdpulse=1;
+                for(var k=0;k<3;k++){
+                    n+='<tr class="ultimate">'
+                    for(var z=0;z<3;z++){
+                        n+='<td id="'+idpulse+tdpulse+'"class="ultimate"></td>';
+                        tdpulse++;
+                    }
+                    n+='</tr>';
+                }
+                n+='</tbody></table></td>';
+                idpulse++;
+            }
+            n+='</tr>';
+        }
+        n+='</tbody>';
+        n+='</table>';
+        n+='</div>';
+        n+='<div class="u_word" id="word" style="top:-500px;"></div>';
+        n+='<div id="back" onclick=menu() >back to menu</div>';
+        n+='<div id="u_again" class="u_word" style="top:-400px display:none;" onclick="ultimate_again()">again</div>'
+        document.body.innerHTML=n;
+        ultimate_again();
+        window.removeEventListener("click",step,false);
+        window.addEventListener("mouseover",check_hover,false);
+       // document.getElementById("big_table").addEventListener("click",u_step,false);
+    }
+    window.addEventListener("load",menu,false);
+</script>
+</head>
+<body>
+</body>
+</html>
