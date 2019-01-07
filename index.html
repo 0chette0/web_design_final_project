@@ -348,11 +348,12 @@
                         set_id=7;
                     }
                 }
-                console.log(step_record);
-                console.log(inner_table);
-                console.log(transport_id);
+                //console.log(step_record);
+                //console.log(inner_table);
+                //console.log(transport_id);
             }
             else if(turns_number==4){
+                console.log(inner_table);
                 if(step_record[2]==5){//may be tie
                     if(step_record[4]==3){//fail
                         set_id=7;
@@ -377,13 +378,13 @@
                 }
                 else {//fail
                     if(step_record[3]==3){
+                        console.log(inner_table);
                         if(step_record[4]==2){
                             set_id=7;
                         }
                         else{
                             set_id=2;
                             end_com(0);
-                            
                         }
                     }
                     else if(step_record[3]==7){
@@ -593,8 +594,8 @@
                             transport_id[5]="5";
                             transport_id[8]="6";
                             transport_id[3]="7";
-                            transport_id[2]="8";
-                            transport_id[1]="9";
+                            transport_id[6]="8";
+                            transport_id[9]="9";
                         }
                     }
                     else if(document.getElementById("3").innerHTML=="O"){
